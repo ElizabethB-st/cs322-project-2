@@ -25,7 +25,7 @@ def parse_config(config_paths):
 config = parse_config(["credentials.ini", "default.ini"])
 port_config = config["SERVER"]["PORT"]
 debug_config = config["SERVER"]["DEBUG"]
-DOCKROOT = config["SERVER"]["DOCKROOT"]
+DOCROOT = config["SERVER"]["DOCROOT"]
 
 
 app = Flask(__name__)
@@ -52,17 +52,17 @@ def index():
 @app.route("/<string:filename>")
 def get_file(filename):
     # check if it is a valid file
-    if os.path.isfile(os.getcwd() + '/pages/' + filename):
+    if os.path.isfile(os.getcwd() + '/' + DOCROOT + filename):
         #if the file exist it will be served
-        return send_from_directory(os.getcwd() + '/pages/', path=filename, as_attachment=False), 200
+        return send_from_directory(os.getcwd() + '/' + DOCROOT, path=filename, as_attachment=False), 200
     else:
         #if there is an illegal character (~ and ..) it will respond with error 403 page
         if ("~" in filename or ".." in filename):
-           return send_from_directory('pages/', '403.html'), 403 
+           return send_from_directory(DOCROOT, '403.html'), 403 
         else:
         #if a user requests a file that doesn't exist with no
         #illegal characters they'll get a 404 error page
-            return send_from_directory('pages/', '404.html'), 404
+            return send_from_directory(DOCROOT, '404.html'), 404
 
 if __name__ == "__main__":
     app.run(debug=debug_config, host='0.0.0.0', port=port_config)
