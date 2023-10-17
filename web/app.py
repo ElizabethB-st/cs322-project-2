@@ -52,9 +52,9 @@ def index():
 @app.route("/<string:filename>")
 def get_file(filename):
     # check if it is a valid file
-    if os.path.isfile(os.getcwd() + '/' + DOCROOT + filename):
+    if os.path.exists(os.getcwd() + '/' + DOCROOT + filename):
         #if the file exist it will be served
-        return send_from_directory(os.getcwd() + '/' + DOCROOT, path=filename, as_attachment=False), 200
+        return send_from_directory(os.getcwd() + '/' + DOCROOT, path=filename), 200
     else:
         #if there is an illegal character (~ and ..) it will respond with error 403 page
         if ("~" in filename or ".." in filename):
@@ -63,6 +63,7 @@ def get_file(filename):
         #if a user requests a file that doesn't exist with no
         #illegal characters they'll get a 404 error page
             return send_from_directory(DOCROOT, '404.html'), 404
+    
 
 if __name__ == "__main__":
     app.run(debug=debug_config, host='0.0.0.0', port=port_config)
